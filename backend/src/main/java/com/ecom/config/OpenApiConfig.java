@@ -6,6 +6,7 @@ import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,13 +21,14 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI openAPI() {
+        List<Server> servers = new ArrayList<>();
+        servers.add(new Server().url("/").description("Application root"));
+
         return new OpenAPI()
                 .info(new Info()
                         .title("Ecom Backend API")
                         .version("1.0.0")
                         .description("6-phase e-commerce backend – CRUD · Auth · Search · Security"))
-                .servers(List.of(
-                        new Server().url("/").description("Application root")
-                ));
+                .servers(servers);
     }
 }

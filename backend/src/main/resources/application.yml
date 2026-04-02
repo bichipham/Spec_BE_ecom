@@ -5,6 +5,7 @@ spring:
     time-zone: UTC
     serialization:
       write-dates-as-timestamps: false
+    property-naming-strategy: SNAKE_CASE
 
 server:
   port: 8080
