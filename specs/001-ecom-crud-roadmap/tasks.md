@@ -11,11 +11,11 @@
 
 **Purpose**: Khởi tạo cấu trúc dự án backend theo plan
 
-- [ ] T001 Khởi tạo Maven Spring Boot project trong backend/pom.xml
-- [ ] T002 Tạo cấu trúc package chính trong backend/src/main/java/com/ecom/Application.java
-- [ ] T003 [P] Khai báo cấu hình ứng dụng cơ bản trong backend/src/main/resources/application.yml
-- [ ] T004 [P] Tạo thư mục dữ liệu tạm JSON và file seed rỗng trong backend/src/main/resources/data/.gitkeep
-- [ ] T005 [P] Tạo tài liệu API entrypoint trong backend/src/main/resources/openapi-info.md
+- [X] T001 Khởi tạo Maven Spring Boot project trong backend/pom.xml
+- [X] T002 Tạo cấu trúc package chính trong backend/src/main/java/com/ecom/Application.java
+- [X] T003 [P] Khai báo cấu hình ứng dụng cơ bản trong backend/src/main/resources/application.yml
+- [X] T004 [P] Tạo thư mục dữ liệu tạm JSON và file seed rỗng trong backend/src/main/resources/data/.gitkeep
+- [X] T005 [P] Tạo tài liệu API entrypoint trong backend/src/main/resources/openapi-info.md
 
 ---
 
@@ -25,16 +25,16 @@
 
 **⚠️ CRITICAL**: Hoàn thành phase này trước mọi user story
 
-- [ ] T006 Tạo mô hình response lỗi chuẩn trong backend/src/main/java/com/ecom/api/common/ErrorResponse.java
-- [ ] T007 [P] Tạo global exception handler trong backend/src/main/java/com/ecom/api/common/GlobalExceptionHandler.java
-- [ ] T008 [P] Tạo request correlation filter trong backend/src/main/java/com/ecom/infrastructure/observability/CorrelationIdFilter.java
-- [ ] T009 [P] Tạo health endpoint trong backend/src/main/java/com/ecom/api/health/HealthController.java
-- [ ] T010 [P] Tạo readiness endpoint trong backend/src/main/java/com/ecom/api/health/ReadinessController.java
-- [ ] T011 Tạo interface repository nền tảng trong backend/src/main/java/com/ecom/domain/repository/BaseRepository.java
-- [ ] T012 [P] Tạo utility đọc/ghi JSON atomic trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonFileStore.java
-- [ ] T013 [P] Tạo cấu hình Jackson UTC và định dạng thời gian trong backend/src/main/java/com/ecom/config/JacksonConfig.java
-- [ ] T014 Tạo OpenAPI config versioned `/api/v1` trong backend/src/main/java/com/ecom/config/OpenApiConfig.java
-- [ ] T015 Tạo package security skeleton trong backend/src/main/java/com/ecom/config/security/SecurityConfig.java
+- [X] T006 Tạo mô hình response lỗi chuẩn trong backend/src/main/java/com/ecom/api/common/ErrorResponse.java
+- [X] T007 [P] Tạo global exception handler trong backend/src/main/java/com/ecom/api/common/GlobalExceptionHandler.java
+- [X] T008 [P] Tạo request correlation filter trong backend/src/main/java/com/ecom/infrastructure/observability/CorrelationIdFilter.java
+- [X] T009 [P] Tạo health endpoint trong backend/src/main/java/com/ecom/api/health/HealthController.java
+- [X] T010 [P] Tạo readiness endpoint trong backend/src/main/java/com/ecom/api/health/ReadinessController.java
+- [X] T011 Tạo interface repository nền tảng trong backend/src/main/java/com/ecom/domain/repository/BaseRepository.java
+- [X] T012 [P] Tạo utility đọc/ghi JSON atomic trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonFileStore.java
+- [X] T013 [P] Tạo cấu hình Jackson UTC và định dạng thời gian trong backend/src/main/java/com/ecom/config/JacksonConfig.java
+- [X] T014 Tạo OpenAPI config versioned `/api/v1` trong backend/src/main/java/com/ecom/config/OpenApiConfig.java
+- [X] T015 Tạo package security skeleton trong backend/src/main/java/com/ecom/config/security/SecurityConfig.java
 
 **Checkpoint**: Foundation sẵn sàng cho triển khai user story
 
