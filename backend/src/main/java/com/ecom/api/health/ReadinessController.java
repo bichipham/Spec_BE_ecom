@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -24,6 +25,8 @@ public class ReadinessController {
     @Operation(summary = "Readiness check")
     @GetMapping("/ready")
     public ResponseEntity<Map<String, String>> ready() {
-        return ResponseEntity.ok(Map.of("status", "READY"));
+        Map<String, String> body = new LinkedHashMap<>();
+        body.put("status", "READY");
+        return ResponseEntity.ok(body);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
@@ -23,6 +24,8 @@ public class HealthController {
     @Operation(summary = "Liveness check")
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> health() {
-        return ResponseEntity.ok(Map.of("status", "UP"));
+        Map<String, String> body = new LinkedHashMap<>();
+        body.put("status", "UP");
+        return ResponseEntity.ok(body);
     }
 }
