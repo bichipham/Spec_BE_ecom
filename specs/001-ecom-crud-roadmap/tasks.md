@@ -48,32 +48,32 @@
 
 ### Implementation for User Story 1
 
-- [ ] T016 [P] [US1] Tạo entity User trong backend/src/main/java/com/ecom/domain/model/User.java
-- [ ] T017 [P] [US1] Tạo entity Product trong backend/src/main/java/com/ecom/domain/model/Product.java
-- [ ] T018 [P] [US1] Tạo entity Order trong backend/src/main/java/com/ecom/domain/model/Order.java
-- [ ] T019 [P] [US1] Tạo entity OrderItem trong backend/src/main/java/com/ecom/domain/model/OrderItem.java
-- [ ] T020 [P] [US1] Tạo DTO CRUD User trong backend/src/main/java/com/ecom/api/user/dto/UserDtos.java
-- [ ] T021 [P] [US1] Tạo DTO CRUD Product trong backend/src/main/java/com/ecom/api/product/dto/ProductDtos.java
-- [ ] T022 [P] [US1] Tạo DTO CRUD Order trong backend/src/main/java/com/ecom/api/order/dto/OrderDtos.java
-- [ ] T023 [P] [US1] Tạo DTO CRUD OrderItem trong backend/src/main/java/com/ecom/api/orderitem/dto/OrderItemDtos.java
-- [ ] T024 [P] [US1] Tạo UserRepository interface trong backend/src/main/java/com/ecom/domain/repository/UserRepository.java
-- [ ] T025 [P] [US1] Tạo ProductRepository interface trong backend/src/main/java/com/ecom/domain/repository/ProductRepository.java
-- [ ] T026 [P] [US1] Tạo OrderRepository interface trong backend/src/main/java/com/ecom/domain/repository/OrderRepository.java
-- [ ] T027 [P] [US1] Tạo OrderItemRepository interface trong backend/src/main/java/com/ecom/domain/repository/OrderItemRepository.java
-- [ ] T028 [P] [US1] Cài đặt JSON UserRepository adapter trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonUserRepository.java
-- [ ] T029 [P] [US1] Cài đặt JSON ProductRepository adapter trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonProductRepository.java
-- [ ] T030 [P] [US1] Cài đặt JSON OrderRepository adapter trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonOrderRepository.java
-- [ ] T031 [P] [US1] Cài đặt JSON OrderItemRepository adapter trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonOrderItemRepository.java
-- [ ] T032 [US1] Tạo UserService CRUD trong backend/src/main/java/com/ecom/application/user/UserService.java
-- [ ] T033 [US1] Tạo ProductService CRUD trong backend/src/main/java/com/ecom/application/product/ProductService.java
-- [ ] T034 [US1] Tạo OrderService CRUD + trạng thái trong backend/src/main/java/com/ecom/application/order/OrderService.java
-- [ ] T035 [US1] Tạo OrderItemService CRUD + tính total_amount + stock check trong backend/src/main/java/com/ecom/application/orderitem/OrderItemService.java
-- [ ] T036 [US1] Triển khai UserController `/api/v1/users` trong backend/src/main/java/com/ecom/api/user/UserController.java
-- [ ] T037 [US1] Triển khai ProductController `/api/v1/products` trong backend/src/main/java/com/ecom/api/product/ProductController.java
-- [ ] T038 [US1] Triển khai OrderController `/api/v1/orders` trong backend/src/main/java/com/ecom/api/order/OrderController.java
-- [ ] T039 [US1] Triển khai OrderItemController `/api/v1/order-items` trong backend/src/main/java/com/ecom/api/orderitem/OrderItemController.java
-- [ ] T040 [US1] Đồng bộ schema endpoint CRUD vào specs/001-ecom-crud-roadmap/contracts/openapi.yaml
-- [ ] T041 [US1] Bổ sung hướng dẫn chạy CRUD nhanh trong specs/001-ecom-crud-roadmap/quickstart.md
+- [X] T016 [P] [US1] Tạo entity User trong backend/src/main/java/com/ecom/domain/model/User.java
+- [X] T017 [P] [US1] Tạo entity Product trong backend/src/main/java/com/ecom/domain/model/Product.java
+- [X] T018 [P] [US1] Tạo entity Order trong backend/src/main/java/com/ecom/domain/model/Order.java
+- [X] T019 [P] [US1] Tạo entity OrderItem trong backend/src/main/java/com/ecom/domain/model/OrderItem.java
+- [X] T020 [P] [US1] Tạo DTO CRUD User trong backend/src/main/java/com/ecom/api/user/dto/UserDtos.java
+- [X] T021 [P] [US1] Tạo DTO CRUD Product trong backend/src/main/java/com/ecom/api/product/dto/ProductDtos.java
+- [X] T022 [P] [US1] Tạo DTO CRUD Order trong backend/src/main/java/com/ecom/api/order/dto/OrderDtos.java
+- [X] T023 [P] [US1] Tạo DTO CRUD OrderItem trong backend/src/main/java/com/ecom/api/orderitem/dto/OrderItemDtos.java
+- [X] T024 [P] [US1] Tạo UserRepository interface trong backend/src/main/java/com/ecom/domain/repository/UserRepository.java
+- [X] T025 [P] [US1] Tạo ProductRepository interface trong backend/src/main/java/com/ecom/domain/repository/ProductRepository.java
+- [X] T026 [P] [US1] Tạo OrderRepository interface trong backend/src/main/java/com/ecom/domain/repository/OrderRepository.java
+- [X] T027 [P] [US1] Tạo OrderItemRepository interface trong backend/src/main/java/com/ecom/domain/repository/OrderItemRepository.java
+- [X] T028 [P] [US1] Cài đặt JSON UserRepository adapter trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonUserRepository.java
+- [X] T029 [P] [US1] Cài đặt JSON ProductRepository adapter trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonProductRepository.java
+- [X] T030 [P] [US1] Cài đặt JSON OrderRepository adapter trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonOrderRepository.java
+- [X] T031 [P] [US1] Cài đặt JSON OrderItemRepository adapter trong backend/src/main/java/com/ecom/infrastructure/persistence/json/JsonOrderItemRepository.java
+- [X] T032 [US1] Tạo UserService CRUD trong backend/src/main/java/com/ecom/application/user/UserService.java
+- [X] T033 [US1] Tạo ProductService CRUD trong backend/src/main/java/com/ecom/application/product/ProductService.java
+- [X] T034 [US1] Tạo OrderService CRUD + trạng thái trong backend/src/main/java/com/ecom/application/order/OrderService.java
+- [X] T035 [US1] Tạo OrderItemService CRUD + tính total_amount + stock check trong backend/src/main/java/com/ecom/application/orderitem/OrderItemService.java
+- [X] T036 [US1] Triển khai UserController `/api/v1/users` trong backend/src/main/java/com/ecom/api/user/UserController.java
+- [X] T037 [US1] Triển khai ProductController `/api/v1/products` trong backend/src/main/java/com/ecom/api/product/ProductController.java
+- [X] T038 [US1] Triển khai OrderController `/api/v1/orders` trong backend/src/main/java/com/ecom/api/order/OrderController.java
+- [X] T039 [US1] Triển khai OrderItemController `/api/v1/order-items` trong backend/src/main/java/com/ecom/api/orderitem/OrderItemController.java
+- [X] T040 [US1] Đồng bộ schema endpoint CRUD vào specs/001-ecom-crud-roadmap/contracts/openapi.yaml
+- [X] T041 [US1] Bổ sung hướng dẫn chạy CRUD nhanh trong specs/001-ecom-crud-roadmap/quickstart.md
 
 **Checkpoint**: User Story 1 hoạt động độc lập và có thể demo MVP
 
