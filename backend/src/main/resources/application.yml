@@ -43,3 +43,10 @@ springdoc:
     tags-sorter: alpha
     display-request-duration: true
   default-produces-media-type: application/json
+
+app:
+  jwt:
+    # Override with a strong random secret in production via APP_JWT_SECRET env var.
+    # Must be at least 256 bits (32 UTF-8 characters) for HS256.
+    secret: "${APP_JWT_SECRET:LocalDevSecretChangeInProd!!__256bits__}"
+    expiration-ms: 3600000  # 1 hour

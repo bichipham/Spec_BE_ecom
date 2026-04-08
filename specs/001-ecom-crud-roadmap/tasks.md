@@ -87,13 +87,13 @@
 
 ### Implementation for User Story 2
 
-- [ ] T042 [P] [US2] Tạo AuthSession model trong backend/src/main/java/com/ecom/domain/model/AuthSession.java
-- [ ] T043 [P] [US2] Tạo JWT utility trong backend/src/main/java/com/ecom/config/security/JwtTokenProvider.java
-- [ ] T044 [P] [US2] Tạo password encoder config trong backend/src/main/java/com/ecom/config/security/PasswordConfig.java
-- [ ] T045 [US2] Cài đặt AuthService login/logout trong backend/src/main/java/com/ecom/application/auth/AuthService.java
-- [ ] T046 [US2] Tạo AuthController `/api/v1/auth/login` trong backend/src/main/java/com/ecom/api/auth/AuthController.java
-- [ ] T047 [US2] Áp dụng RBAC cho endpoint CRUD trong backend/src/main/java/com/ecom/config/security/SecurityConfig.java
-- [ ] T048 [US2] Đồng bộ contract auth vào specs/001-ecom-crud-roadmap/contracts/openapi.yaml
+- [X] T042 [P] [US2] Tạo AuthSession model trong backend/src/main/java/com/ecom/domain/model/AuthSession.java
+- [X] T043 [P] [US2] Tạo JWT utility trong backend/src/main/java/com/ecom/config/security/JwtTokenProvider.java
+- [X] T044 [P] [US2] Tạo password encoder config trong backend/src/main/java/com/ecom/config/security/PasswordConfig.java
+- [X] T045 [US2] Cài đặt AuthService login/logout trong backend/src/main/java/com/ecom/application/auth/AuthService.java
+- [X] T046 [US2] Tạo AuthController `/api/v1/auth/login` trong backend/src/main/java/com/ecom/api/auth/AuthController.java
+- [X] T047 [US2] Áp dụng RBAC cho endpoint CRUD trong backend/src/main/java/com/ecom/config/security/SecurityConfig.java
+- [X] T048 [US2] Đồng bộ contract auth vào specs/001-ecom-crud-roadmap/contracts/openapi.yaml
 
 **Checkpoint**: User Story 2 chạy độc lập trên nền CRUD
 

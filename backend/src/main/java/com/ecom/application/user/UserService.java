@@ -8,7 +8,7 @@ import com.ecom.domain.model.User;
 import com.ecom.domain.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -25,9 +25,8 @@ import java.util.stream.Collectors;
  *   <li>Password is BCrypt-hashed before persistence (plain text never stored).</li>
  * </ul>
  *
- * <p>Phase 2 note: {@link BCryptPasswordEncoder} is instantiated here directly.
- * When {@code PasswordConfig} bean is added in T044, replace this field with
- * an injected {@code PasswordEncoder} dependency.
+ * <p>Phase 2 (T044): password hashing delegates to the shared {@link PasswordEncoder} bean
+ * provided by {@code PasswordConfig}.
  */
 @Slf4j
 @Service
@@ -35,10 +34,7 @@ import java.util.stream.Collectors;
 public class UserService {
 
     private final UserRepository userRepository;
-
-    // Phase-1 local instance; will be replaced by injected bean in Phase 2 (T044)
-    @SuppressWarnings("java:S2259")
-    private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+    private final PasswordEncoder passwordEncoder;
 
     public UserResponse create(UserCreateRequest req) {
         userRepository.findByEmail(req.getEmail()).ifPresent(existing -> {

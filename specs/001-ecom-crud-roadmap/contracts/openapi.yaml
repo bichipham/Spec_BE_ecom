@@ -4,7 +4,7 @@ info:
   version: 1.0.0
   description: |
     Contract for 6-phase e-commerce backend roadmap.
-    Phase 1 (CRUD) is fully implemented.
+    Phase 1 (CRUD) and Phase 2 (Auth + RBAC) are fully implemented.
 
 servers:
   - url: /api/v1
@@ -12,8 +12,10 @@ servers:
 tags:
   - name: Health
     description: Liveness and readiness probes
+  - name: Auth
+    description: Authentication – login (Phase 2)
   - name: Users
-    description: User management – CRUD
+    description: User management – CRUD (ADMIN only)
   - name: Products
     description: Product management – CRUD
   - name: Orders
@@ -396,12 +398,12 @@ paths:
         '404':
           $ref: '#/components/responses/NotFound'
 
-  # ── Future phases (stubs) ───────────────────────────────────────────────────
+  # ── Auth (Phase 2) ─────────────────────────────────────────────────────────
 
   /auth/login:
     post:
       tags: [Auth]
-      summary: Login and get access token (Phase 2)
+      summary: Login and receive a JWT access token
       operationId: login
       requestBody:
         required: true
@@ -409,9 +411,29 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/LoginRequest'
+            example:
+              email: alice@example.com
+              password: s3cr3t!Pass
       responses:
-        '200': { description: Login success }
-        '401': { description: Unauthorized }
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+              example:
+                access_token: eyJhbGciOiJIUzI1NiJ9...
+                token_type: Bearer
+                expires_at: '2026-04-08T10:00:00Z'
+                role: OPERATOR
+        '401':
+          description: Invalid credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+
+  # ── Future phases (stubs) ───────────────────────────────────────────────────
 
   /search:
     get:
@@ -448,6 +470,15 @@ paths:
         '200': { description: Advanced search results }
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        JWT obtained from POST /api/v1/auth/login.
+        Pass as: Authorization: Bearer <token>
+
   parameters:
     Id:
       in: path
@@ -723,7 +754,7 @@ components:
           type: string
           format: date-time
 
-    # ── Auth (Phase 2 stub) ──────────────────────────────────────────────────
+    # ── Auth (Phase 2) ───────────────────────────────────────────────────────
 
     LoginRequest:
       type: object
@@ -732,5 +763,30 @@ components:
         email:
           type: string
           format: email
+          example: alice@example.com
         password:
           type: string
+          minLength: 8
+          example: s3cr3t!Pass
+
+    LoginResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: Signed JWT – pass as 'Authorization: Bearer <token>'
+          example: eyJhbGciOiJIUzI1NiJ9...
+        token_type:
+          type: string
+          example: Bearer
+        expires_at:
+          type: string
+          format: date-time
+          description: UTC expiry timestamp of the issued token
+          example: '2026-04-08T10:00:00Z'
+        role:
+          type: string
+          enum: [ADMIN, OPERATOR]
+          description: Role encoded in the token
+          example: OPERATOR
+
