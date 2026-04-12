@@ -2,29 +2,79 @@ name: PR SDD Checks
 
 on:
   pull_request:
-    branches: [master]
+    branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
+    paths:
+      - "src/**"
+      - "tests/**"
+      - "specs/**"
+      - "scripts/**"
+      - "package.json"
+      - "package-lock.json"
+      - "requirements.txt"
+      - ".github/workflows/**"
+      - ".github/PULL_REQUEST_TEMPLATE.md"
 
 concurrency:
   group: pr-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 jobs:
-  spec-check:
-    name: Check spec presence
+  detect-spec:
+    name: Detect spec file
     runs-on: ubuntu-latest
+    outputs:
+      spec_file: ${{ steps.detect.outputs.spec_file }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Validate spec exists
+      - name: Detect spec from PR body or changed files
+        id: detect
+        shell: bash
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
         run: |
-          test -f specs/spec_A.md || (echo "Missing specs/spec_A.md" && exit 1)
+          set -euo pipefail
+
+          SPEC_FILE=""
+
+          echo "Checking PR description for spec path..."
+          if [ -n "${PR_BODY:-}" ]; then
+            SPEC_FILE=$(printf "%s" "$PR_BODY" | grep -oE 'specs/[^[:space:]]+\.md' | head -n 1 || true)
+          fi
+
+          if [ -z "$SPEC_FILE" ]; then
+            echo "No spec found in PR body. Checking changed files..."
+            git fetch origin main
+            SPEC_FILE=$(git diff --name-only origin/main...HEAD | grep '^specs/.*\.md$' | head -n 1 || true)
+          fi
+
+          if [ -z "$SPEC_FILE" ]; then
+            echo "No spec file found."
+            echo "Please either:"
+            echo "1) put a spec path like specs/feature_x.md in PR description, or"
+            echo "2) include a spec file change in this PR."
+            exit 1
+          fi
+
+          if [ ! -f "$SPEC_FILE" ]; then
+            echo "Detected spec file does not exist in repo: $SPEC_FILE"
+            exit 1
+          fi
+
+          echo "Using spec file: $SPEC_FILE"
+          echo "spec_file=$SPEC_FILE" >> "$GITHUB_OUTPUT"
+
+      - name: Show detected spec
+        run: echo "Detected spec is ${{ steps.detect.outputs.spec_file }}"
 
   validate:
-    name: Lint, build, and tests
+    name: Lint / Build / Tests
     runs-on: ubuntu-latest
-    needs: spec-check
+    needs: detect-spec
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -56,7 +106,7 @@ jobs:
   ai-review:
     name: AI preliminary review
     runs-on: ubuntu-latest
-    needs: spec-check
+    needs: detect-spec
     permissions:
       contents: read
       pull-requests: write
@@ -73,29 +123,34 @@ jobs:
 
       - name: Install Python dependencies
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Capture PR diff
+        shell: bash
         run: |
+          set -euo pipefail
           git fetch origin main
           git diff origin/main...HEAD > pr.diff
+          echo "PR diff size:"
+          wc -c pr.diff
 
       - name: Run AI review
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          GITHUB_EVENT_PATH: ${{ github.event_path }}
+          SPEC_FILE: ${{ needs.detect-spec.outputs.spec_file }}
         run: |
-          python scripts/ai_review.py specs/spec_A.md pr.diff > ai_review.md
+          python scripts/ai_review.py "$SPEC_FILE" pr.diff > ai_review.md
 
       - name: Upload AI review artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ai-review
+          name: ai-review-pr-${{ github.event.pull_request.number }}
           path: ai_review.md
+          if-no-files-found: error
 
       - name: Comment AI review on PR
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh pr comment ${{ github.event.pull_request.number }} \
-            --body-file ai_review.md
+          gh pr comment ${{ github.event.pull_request.number }} --body-file ai_review.md
