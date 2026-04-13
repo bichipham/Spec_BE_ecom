@@ -31,7 +31,12 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] Layering preserved: API -> service -> repository; no direct storage access in API layer.
+- [ ] Contract-first API defined: versioned endpoints, schema definitions, and error format.
+- [ ] CRUD test strategy defined: unit + integration coverage for success and failure paths.
+- [ ] Storage abstraction present: repository interfaces isolate JSON file persistence.
+- [ ] Migration readiness documented: path from JSON files to database-backed storage.
+- [ ] Observability included: structured logging, correlation IDs, health/readiness endpoints.
 
 ## Project Structure
 

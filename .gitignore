@@ -1,1 +1,32 @@
+# Java / Maven
+**/target/
+*.class
+*.jar
+*.war
+*.ear
+
+# Build / IDE
+.gradle/
+build/
+out/
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs / temp
+*.log
+*.tmp
+*.swp
+
+# Env files
+.env
+.env.*
+
+# Runtime data generated locally
+backend/src/main/resources/data/*.json
+!backend/src/main/resources/data/.gitkeep
 .env

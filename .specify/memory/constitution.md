@@ -1,50 +1,93 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+- Version change: template -> 1.0.0
+- Modified principles:
+	- Principle 1: placeholder -> I. Domain-First Modular Architecture
+	- Principle 2: placeholder -> II. Contract-First REST API
+	- Principle 3: placeholder -> III. Test-Backed CRUD Delivery
+	- Principle 4: placeholder -> IV. Storage Abstraction & Migration Readiness
+	- Principle 5: placeholder -> V. Observability & Operational Safety
+- Added sections:
+	- Technical Standards & Constraints
+	- Development Workflow & Quality Gates
+- Removed sections:
+	- None
+- Templates requiring updates:
+	- ✅ updated: .specify/templates/plan-template.md
+	- ✅ updated: .specify/templates/spec-template.md
+	- ✅ updated: .specify/templates/tasks-template.md
+	- ⚠ pending: .specify/templates/commands/*.md (directory not found)
+- Follow-up TODOs:
+	- Verify future command templates (if created) reference this constitution consistently.
+-->
+
+# Spec_BE_ecom Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Domain-First Modular Architecture
+All backend features MUST be implemented in clear modules by domain (e.g., product, cart,
+order, user) with strict separation between API layer, application service layer, and
+repository/storage layer. Direct file access from controllers is forbidden. This ensures the
+system stays simple now while remaining easy to scale into database-backed services later.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+### II. Contract-First REST API
+Every CRUD capability MUST expose stable, versioned REST endpoints (minimum `/api/v1/...`)
+with explicit request/response schemas and consistent error format. Breaking API changes MUST
+increment version and provide migration notes. This protects clients and enables safe
+incremental expansion.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### III. Test-Backed CRUD Delivery
+Each CRUD endpoint MUST have automated coverage for happy path, validation failure, not-found,
+and storage failure behavior. Unit tests MUST cover service logic and integration tests MUST
+cover end-to-end HTTP flows with JSON file storage. Features cannot be marked done if these
+tests are missing or failing.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+### IV. Storage Abstraction & Migration Readiness
+Current persistence MAY use JSON files, but all persistence access MUST go through repository
+interfaces so storage implementation can be swapped later without changing business logic.
+Data models MUST include stable IDs, timestamps, and soft-delete strategy where relevant.
+Any new feature MUST document its migration path from JSON files to a database backend.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### V. Observability & Operational Safety
+The service MUST emit structured logs for each request, validation failure, and storage write,
+including correlation IDs and operation outcomes. Global exception handling MUST prevent stack
+trace leakage to clients while preserving internal diagnostics. Health and readiness endpoints
+MUST exist for deployment and scaling operations.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+## Technical Standards & Constraints
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+- Backend language and framework MUST remain consistent across the codebase (Java-based stack
+	for this repository).
+- Temporary persistence MUST use JSON files under a dedicated data directory with file-locking
+	or atomic-write protection to avoid corruption.
+- API payloads MUST use UTC timestamps and consistent ID format.
+- Pagination and filtering MUST be supported for list endpoints where entity count can grow.
+- Security baseline MUST include input validation, output sanitization, and deny-by-default
+	error details for external responses.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+## Development Workflow & Quality Gates
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+- Work MUST begin with a spec and implementation plan aligned to this constitution.
+- Pull requests MUST include: updated contracts (if API changed), tests, and a short impact
+	note on scale and migration readiness.
+- Code review MUST reject changes that bypass layering, skip tests, or couple domain logic
+	directly to JSON file operations.
+- Before merge, CI MUST pass linting, test suites, and constitution check gates.
+- Release notes MUST identify any API changes and storage implications.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution is the highest-priority project guidance for engineering practices in this
+repository. Amendments require: (1) explicit proposal, (2) review approval, (3) update of
+affected templates or guidance files, and (4) version bump by semantic versioning policy.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Versioning policy for this constitution is mandatory:
+- MAJOR: Removes or redefines principles/governance in a backward-incompatible way.
+- MINOR: Adds a new principle/section or materially expands required practices.
+- PATCH: Clarifies wording, fixes ambiguity, or corrects non-semantic details.
+
+Compliance review is required in planning, specification, tasks breakdown, and pull request
+review. Any exception MUST be documented with rationale, scope, risk, and expiration date.
+
+**Version**: 1.0.0 | **Ratified**: 2026-04-02 | **Last Amended**: 2026-04-02
