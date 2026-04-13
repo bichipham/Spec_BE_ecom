@@ -52,7 +52,7 @@ public final class UserDtos {
         @Size(min = 8, message = "password must be at least 8 characters")
         private String password;
 
-        @Schema(description = "User role", example = "OPERATOR", allowableValues = {"ADMIN", "OPERATOR"})
+        @Schema(description = "User role", example = "GUEST", allowableValues = {"ADMIN", "OPERATOR", "GUEST"})
         @NotNull(message = "role is required")
         private User.Role role;
     }
@@ -76,7 +76,7 @@ public final class UserDtos {
         @Email(message = "email must be a valid email address")
         private String email;
 
-        @Schema(description = "User role", example = "OPERATOR", allowableValues = {"ADMIN", "OPERATOR"})
+        @Schema(description = "User role", example = "GUEST", allowableValues = {"ADMIN", "OPERATOR", "GUEST"})
         @NotNull(message = "role is required")
         private User.Role role;
     }

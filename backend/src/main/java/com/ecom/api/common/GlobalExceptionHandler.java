@@ -92,6 +92,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleMessageNotReadable(HttpMessageNotReadableException ex) {
+        log.warn("HttpMessageNotReadableException: {}", ex.getMessage(), ex);
         String message = "Invalid request body";
         Throwable cause = ex.getCause();
         if (cause instanceof InvalidFormatException ife && ife.getTargetType() != null
