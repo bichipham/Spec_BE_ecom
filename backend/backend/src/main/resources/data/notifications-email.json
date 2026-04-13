@@ -7,4 +7,40 @@
   "status" : "SENT",
   "created_at" : "2026-04-13T16:36:46.249619Z",
   "sent_at" : "2026-04-13T16:36:46.252783Z"
+}, {
+  "id" : "92976c43-7a40-4572-adbe-4192da7f4a0c",
+  "recipient_id" : "bichphamtest1@gmail.com",
+  "channel" : "EMAIL",
+  "subject" : "Test from ecom backend",
+  "body" : "This is a test email from your Spring Boot app!",
+  "status" : "FAILED",
+  "created_at" : "2026-04-13T16:51:25.137483Z",
+  "sent_at" : null
+}, {
+  "id" : "124c577e-5554-42d2-ab8f-87c6ea373f93",
+  "recipient_id" : "bichphamtest1@gmail.com",
+  "channel" : "EMAIL",
+  "subject" : "Test from ecom backend",
+  "body" : "This is a test email from your Spring Boot app!",
+  "status" : "FAILED",
+  "created_at" : "2026-04-13T16:55:36.697664Z",
+  "sent_at" : null
+}, {
+  "id" : "692a5a6c-20a4-47d8-ae31-0587b728da6a",
+  "recipient_id" : "bichphamtest1@gmail.com",
+  "channel" : "EMAIL",
+  "subject" : "Test from ecom backend",
+  "body" : "This is a test email from your Spring Boot app!",
+  "status" : "FAILED",
+  "created_at" : "2026-04-13T16:58:41.490979Z",
+  "sent_at" : null
+}, {
+  "id" : "b6bf5f79-3703-49c9-b190-85bc0793dfa3",
+  "recipient_id" : "bichphamtest1@gmail.com",
+  "channel" : "EMAIL",
+  "subject" : "Test from ecom backend",
+  "body" : "This is a test email from your Spring Boot app!",
+  "status" : "SENT",
+  "created_at" : "2026-04-13T17:01:01.186856Z",
+  "sent_at" : "2026-04-13T17:01:07.245895Z"
 } ]
