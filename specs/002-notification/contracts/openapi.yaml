@@ -1,0 +1,269 @@
+openapi: 3.0.3
+info:
+  title: Notification API
+  version: 1.0.0
+  description: |
+    Contract for Notification System (feature 002-notification).
+    Supports sending notifications via EMAIL, SMS, ZALO channels using Factory Pattern.
+    Storage: JSON per channel. Sender implementations are stubs (log output only).
+
+servers:
+  - url: /api/v1
+
+tags:
+  - name: Notifications
+    description: Send and query notifications across channels
+
+paths:
+
+  # ── Notifications ──────────────────────────────────────────────────────────
+
+  /notifications/send:
+    post:
+      tags: [Notifications]
+      summary: Send a notification via the specified channel
+      operationId: sendNotification
+      description: |
+        Dispatches a notification to the specified channel. The correct sender
+        (EmailSender, SmsSender, ZaloSender) is resolved by NotificationFactory.
+        The notification is persisted with status PENDING before dispatch,
+        then updated to SENT or FAILED based on the sender result.
+        
+        Channel-specific rules:
+        - **SMS**: `body` must be ≤ 160 characters; `subject` is ignored.
+        - **ZALO**: `subject` is ignored.
+        - **EMAIL**: `subject` is recommended but not required.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SendNotificationRequest'
+            examples:
+              email:
+                summary: Send via EMAIL
+                value:
+                  recipientId: "550e8400-e29b-41d4-a716-446655440000"
+                  channel: EMAIL
+                  subject: "Order Confirmation"
+                  body: "Your order #1234 has been confirmed and is being processed."
+              sms:
+                summary: Send via SMS (no subject)
+                value:
+                  recipientId: "550e8400-e29b-41d4-a716-446655440000"
+                  channel: SMS
+                  body: "Your order #1234 has been shipped."
+              zalo:
+                summary: Send via ZALO
+                value:
+                  recipientId: "550e8400-e29b-41d4-a716-446655440000"
+                  channel: ZALO
+                  body: "Đơn hàng của bạn đang được giao."
+      responses:
+        '201':
+          description: Notification dispatched and persisted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+              example:
+                id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                recipientId: "550e8400-e29b-41d4-a716-446655440000"
+                channel: EMAIL
+                subject: "Order Confirmation"
+                body: "Your order #1234 has been confirmed and is being processed."
+                status: SENT
+                createdAt: "2026-04-13T08:00:00Z"
+                sentAt: "2026-04-13T08:00:00.123Z"
+        '400':
+          description: Validation error — missing required fields, invalid channel, or SMS body too long
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              example:
+                code: VALIDATION_ERROR
+                message: "Request validation failed"
+                errors:
+                  - field: body
+                    message: "SMS body must not exceed 160 characters"
+                timestamp: "2026-04-13T08:00:00Z"
+                correlation_id: "d4e5f6a7-b8c9-0123-def4-567890abcdef"
+
+  /notifications/{id}:
+    parameters:
+      - $ref: '#/components/parameters/Id'
+    get:
+      tags: [Notifications]
+      summary: Get notification by ID
+      operationId: getNotification
+      description: |
+        Retrieves full details of a notification by its UUID.
+        Searches across all channel stores (email → sms → zalo).
+        Returns 404 if not found in any channel store.
+      responses:
+        '200':
+          description: Notification found
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NotificationResponse'
+              example:
+                id: "a1b2c3d4-e5f6-7890-abcd-ef1234567890"
+                recipientId: "550e8400-e29b-41d4-a716-446655440000"
+                channel: SMS
+                subject: null
+                body: "Your order #1234 has been shipped."
+                status: SENT
+                createdAt: "2026-04-13T08:00:00Z"
+                sentAt: "2026-04-13T08:00:00.050Z"
+        '404':
+          $ref: '#/components/responses/NotFound'
+
+components:
+  parameters:
+    Id:
+      in: path
+      name: id
+      required: true
+      schema:
+        type: string
+        format: uuid
+      description: Notification UUID
+
+  responses:
+    NotFound:
+      description: Notification not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: NOT_FOUND
+            message: "Notification with id 'a1b2c3d4-...' not found"
+            errors: []
+            timestamp: "2026-04-13T08:00:00Z"
+            correlation_id: "d4e5f6a7-b8c9-0123-def4-567890abcdef"
+    BadRequest:
+      description: Validation error or business rule violation
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+
+  schemas:
+
+    # ── Common ──────────────────────────────────────────────────────────────
+
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: string
+          example: NOT_FOUND
+        message:
+          type: string
+          example: "Notification with id '...' not found"
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/FieldError'
+        timestamp:
+          type: string
+          format: date-time
+        correlation_id:
+          type: string
+          format: uuid
+
+    FieldError:
+      type: object
+      properties:
+        field:
+          type: string
+          example: body
+        message:
+          type: string
+          example: "SMS body must not exceed 160 characters"
+
+    # ── Enums ────────────────────────────────────────────────────────────────
+
+    ChannelType:
+      type: string
+      enum: [EMAIL, SMS, ZALO]
+      description: |
+        Supported notification channels.
+        - EMAIL: subject and body; no length limit beyond max 4000.
+        - SMS: body only; max 160 characters; subject ignored.
+        - ZALO: body only; subject ignored.
+
+    NotificationStatus:
+      type: string
+      enum: [PENDING, SENT, FAILED]
+      description: |
+        Lifecycle status of a notification.
+        - PENDING: created, not yet dispatched.
+        - SENT: successfully dispatched by the sender stub.
+        - FAILED: sender threw an exception; sentAt remains null.
+
+    # ── Request Schemas ──────────────────────────────────────────────────────
+
+    SendNotificationRequest:
+      type: object
+      required: [recipientId, channel, body]
+      properties:
+        recipientId:
+          type: string
+          format: uuid
+          description: ID of the intended recipient
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        channel:
+          $ref: '#/components/schemas/ChannelType'
+        subject:
+          type: string
+          maxLength: 255
+          nullable: true
+          description: |
+            Notification subject/title. Used only for EMAIL channel.
+            Ignored (not stored) for SMS and ZALO channels.
+          example: "Order Confirmation"
+        body:
+          type: string
+          maxLength: 4000
+          description: |
+            Notification body content. Required for all channels.
+            For SMS channel: maximum 160 characters.
+          example: "Your order has been confirmed."
+
+    # ── Response Schemas ─────────────────────────────────────────────────────
+
+    NotificationResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          description: Unique notification identifier
+        recipientId:
+          type: string
+          format: uuid
+          description: ID of the intended recipient
+        channel:
+          $ref: '#/components/schemas/ChannelType'
+        subject:
+          type: string
+          nullable: true
+          description: Subject line; null for SMS and ZALO channels
+        body:
+          type: string
+          description: Notification body content
+        status:
+          $ref: '#/components/schemas/NotificationStatus'
+        createdAt:
+          type: string
+          format: date-time
+          description: UTC timestamp when the notification record was created
+        sentAt:
+          type: string
+          format: date-time
+          nullable: true
+          description: UTC timestamp when the notification was successfully sent; null if PENDING or FAILED
