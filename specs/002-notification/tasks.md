@@ -41,16 +41,16 @@
 
 ### Implementation for User Story 1
 
-- [ ] T009 [P] [US1] Tạo interface NotificationSender với phương thức send(Notification) trong backend/src/main/java/com/ecom/application/notification/NotificationSender.java
-- [ ] T010 [P] [US1] Tạo EmailSender stub ghi log đánh dấu gửi qua kênh Email trong backend/src/main/java/com/ecom/application/notification/EmailSender.java
-- [ ] T011 [P] [US1] Tạo SmsSender stub ghi log đánh dấu gửi qua kênh SMS trong backend/src/main/java/com/ecom/application/notification/SmsSender.java
-- [ ] T012 [P] [US1] Tạo ZaloSender stub ghi log đánh dấu gửi qua kênh Zalo trong backend/src/main/java/com/ecom/application/notification/ZaloSender.java
-- [ ] T013 [US1] Tạo NotificationFactory phân giải đúng sender theo ChannelType trong backend/src/main/java/com/ecom/application/notification/NotificationFactory.java
-- [ ] T014 [P] [US1] Tạo NotificationDtos (SendNotificationRequest, NotificationResponse) trong backend/src/main/java/com/ecom/api/notification/dto/NotificationDtos.java
-- [ ] T015 [US1] Tạo NotificationService xử lý luồng gửi PENDING → SENT/FAILED và lưu bản ghi trong backend/src/main/java/com/ecom/application/notification/NotificationService.java
-- [ ] T016 [US1] Triển khai NotificationController POST /api/v1/notifications/send trong backend/src/main/java/com/ecom/api/notification/NotificationController.java
-- [ ] T017 [US1] Đồng bộ schema endpoint POST /send vào specs/002-notification/contracts/openapi.yaml
-- [ ] T018 [US1] Bổ sung hướng dẫn kiểm thử gửi thông báo qua 3 kênh trong specs/002-notification/quickstart.md
+- [x] T009 [P] [US1] Tạo interface NotificationSender với phương thức send(Notification) trong backend/src/main/java/com/ecom/application/notification/NotificationSender.java
+- [x] T010 [P] [US1] Tạo EmailSender stub ghi log đánh dấu gửi qua kênh Email trong backend/src/main/java/com/ecom/application/notification/EmailSender.java
+- [x] T011 [P] [US1] Tạo SmsSender stub ghi log đánh dấu gửi qua kênh SMS trong backend/src/main/java/com/ecom/application/notification/SmsSender.java
+- [x] T012 [P] [US1] Tạo ZaloSender stub ghi log đánh dấu gửi qua kênh Zalo trong backend/src/main/java/com/ecom/application/notification/ZaloSender.java
+- [x] T013 [US1] Tạo NotificationFactory phân giải đúng sender theo ChannelType trong backend/src/main/java/com/ecom/application/notification/NotificationFactory.java
+- [x] T014 [P] [US1] Tạo NotificationDtos (SendNotificationRequest, NotificationResponse) trong backend/src/main/java/com/ecom/api/notification/dto/NotificationDtos.java
+- [x] T015 [US1] Tạo NotificationService xử lý luồng gửi PENDING → SENT/FAILED và lưu bản ghi trong backend/src/main/java/com/ecom/application/notification/NotificationService.java
+- [x] T016 [US1] Triển khai NotificationController POST /api/v1/notifications/send trong backend/src/main/java/com/ecom/api/notification/NotificationController.java
+- [x] T017 [US1] Đồng bộ schema endpoint POST /send vào specs/002-notification/contracts/openapi.yaml
+- [x] T018 [US1] Bổ sung hướng dẫn kiểm thử gửi thông báo qua 3 kênh trong specs/002-notification/quickstart.md
 
 **Checkpoint**: User Story 1 hoạt động độc lập — POST /send với 3 kênh, có thể demo MVP
 

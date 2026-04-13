@@ -1,6 +1,7 @@
 com/ecom/domain/model/OrderItem.class
 com/ecom/api/order/dto/OrderDtos$OrderUpdateRequest$OrderUpdateRequestBuilder.class
 com/ecom/api/user/dto/UserDtos$UserResponse.class
+com/ecom/application/notification/NotificationFactory$1.class
 com/ecom/api/order/dto/OrderDtos$OrderCreateRequest.class
 com/ecom/api/orderitem/dto/OrderItemDtos.class
 com/ecom/domain/model/OrderItem$OrderItemBuilder.class

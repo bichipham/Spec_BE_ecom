@@ -7,6 +7,8 @@
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/health/HealthController.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/health/ReadinessController.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/health/RootRedirectController.java
+/Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/notification/NotificationController.java
+/Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/notification/dto/NotificationDtos.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/order/OrderController.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/order/dto/OrderDtos.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/orderitem/OrderItemController.java
@@ -16,6 +18,12 @@
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/user/UserController.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/api/user/dto/UserDtos.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/auth/AuthService.java
+/Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/EmailSender.java
+/Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/NotificationFactory.java
+/Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/NotificationSender.java
+/Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/NotificationService.java
+/Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/SmsSender.java
+/Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/ZaloSender.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/order/OrderService.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/orderitem/OrderItemService.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/product/ProductService.java
