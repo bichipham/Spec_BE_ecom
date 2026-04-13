@@ -55,12 +55,12 @@ Rules:
 {diff_text}
 """
 
-    response = client.responses.create(
-        model="gpt-5.4",
-        input=prompt,
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[{"role": "user", "content": prompt}],
     )
 
-    print(response.output_text.strip())
+    print(response.choices[0].message.content.strip())
     return 0
 
 if __name__ == "__main__":
