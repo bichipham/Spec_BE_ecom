@@ -80,30 +80,69 @@ curl -s http://localhost:8081/api/v1/notifications/non-existent-id | jq .
 
 ## 5. P3 — Validation và lỗi đầu vào
 
+### 5.1 Kênh không hợp lệ — unknown enum string (T031 gap fix)
+
 ```bash
-# Kênh không hợp lệ
 curl -s -X POST http://localhost:8081/api/v1/notifications/send \
   -H "Content-Type: application/json" \
   -d '{"recipientId":"uid","channel":"UNKNOWN","body":"test"}' | jq .
 # → 400 Bad Request
+# {
+#   "code": "INVALID_REQUEST",
+#   "message": "Invalid value 'UNKNOWN' — allowed values: EMAIL, SMS, ZALO",
+#   "errors": [],
+#   "timestamp": "...",
+#   "correlation_id": "..."
+# }
+```
 
-# Thiếu recipientId
+### 5.2 Thiếu recipientId
+
+```bash
 curl -s -X POST http://localhost:8081/api/v1/notifications/send \
   -H "Content-Type: application/json" \
   -d '{"channel":"EMAIL","body":"test"}' | jq .
-# → 400 Bad Request; errors chứa field "recipientId"
+# → 400 Bad Request
+# {
+#   "code": "VALIDATION_ERROR",
+#   "message": "Request validation failed",
+#   "errors": [{"field": "recipientId", "message": "recipient_id is required"}],
+#   "timestamp": "..."
+# }
+```
 
-# Thiếu body
+### 5.3 Thiếu body
+
+```bash
 curl -s -X POST http://localhost:8081/api/v1/notifications/send \
   -H "Content-Type: application/json" \
   -d '{"recipientId":"uid","channel":"SMS"}' | jq .
 # → 400 Bad Request; errors chứa field "body"
+```
 
-# SMS body vượt 160 ký tự
+### 5.4 SMS body vượt 160 ký tự
+
+```bash
 curl -s -X POST http://localhost:8081/api/v1/notifications/send \
   -H "Content-Type: application/json" \
   -d "{\"recipientId\":\"uid\",\"channel\":\"SMS\",\"body\":\"$(python3 -c 'print("x"*161)')\"}" | jq .
-# → 400 Bad Request; errors chứa field "body" với message về max length
+# → 400 Bad Request
+# {
+#   "code": "BAD_REQUEST",
+#   "message": "SMS body must not exceed 160 characters",
+#   "errors": [],
+#   "timestamp": "..."
+# }
+```
+
+### 5.5 Sender failure → trạng thái FAILED (strategy isolation)
+
+```bash
+# Giả lập bằng cách mock SmsSender trong test; hoặc tạm thời thay đổi SmsSender throw RuntimeException
+# Kết quả mong đợi: 201 Created nhưng notification.status = FAILED
+# → Không rò rỉ stack trace; lỗi nội bộ được che giấu (FR-011)
+# → Notification vẫn được lưu với sentAt = null (FR-007)
+# → Các kênh EMAIL và ZALO hoàn toàn không bị ảnh hưởng (FR-013 — strategy isolation)
 ```
 
 ## 6. Expected checks

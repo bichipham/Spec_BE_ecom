@@ -1,16 +1,20 @@
 package com.ecom.api.common;
 
+import com.ecom.application.notification.UnsupportedChannelException;
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.time.Instant;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,6 +62,48 @@ public class GlobalExceptionHandler {
         ErrorResponse body = ErrorResponse.builder()
                 .code("BAD_REQUEST")
                 .message(ex.getMessage())
+                .timestamp(Instant.now())
+                .correlationId(MDC.get("correlationId"))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    /** T025 – {@link UnsupportedChannelException} → 400. */
+    @ExceptionHandler(UnsupportedChannelException.class)
+    public ResponseEntity<ErrorResponse> handleUnsupportedChannel(UnsupportedChannelException ex) {
+        ErrorResponse body = ErrorResponse.builder()
+                .code("UNSUPPORTED_CHANNEL")
+                .message(ex.getMessage())
+                .timestamp(Instant.now())
+                .correlationId(MDC.get("correlationId"))
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(body);
+    }
+
+    /**
+     * T031 – {@link HttpMessageNotReadableException} → 400.
+     *
+     * <p>Triggered when Jackson cannot deserialise the request body, e.g. when
+     * {@code channel} carries an unknown enum string such as {@code "UNKNOWN"}.
+     * Without this handler the exception falls through to the generic 500 handler
+     * (SC-003 violation).
+     */
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleMessageNotReadable(HttpMessageNotReadableException ex) {
+        String message = "Invalid request body";
+        Throwable cause = ex.getCause();
+        if (cause instanceof InvalidFormatException ife && ife.getTargetType() != null
+                && ife.getTargetType().isEnum()) {
+            String allowed = Arrays.stream(ife.getTargetType().getEnumConstants())
+                    .map(Object::toString)
+                    .collect(Collectors.joining(", "));
+            message = "Invalid value '" + ife.getValue() + "' — allowed values: " + allowed;
+        }
+        ErrorResponse body = ErrorResponse.builder()
+                .code("INVALID_REQUEST")
+                .message(message)
                 .timestamp(Instant.now())
                 .correlationId(MDC.get("correlationId"))
                 .build();

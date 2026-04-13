@@ -4,7 +4,8 @@ info:
   version: 1.0.0
   description: |
     Contract for Notification System (feature 002-notification).
-    Supports sending notifications via EMAIL, SMS, ZALO channels using Factory Pattern.
+    Supports sending notifications via EMAIL, SMS, ZALO channels using Strategy Pattern + Factory Pattern.
+    Each channel is an independent concrete strategy; NotificationFactory resolves the correct one at runtime.
     Storage: JSON per channel. Sender implementations are stubs (log output only).
 
 servers:
@@ -76,19 +77,43 @@ paths:
                 createdAt: "2026-04-13T08:00:00Z"
                 sentAt: "2026-04-13T08:00:00.123Z"
         '400':
-          description: Validation error — missing required fields, invalid channel, or SMS body too long
+          description: |
+            Validation error or business rule violation. Possible error codes:
+            - `VALIDATION_ERROR` — missing required field or field constraint violated
+            - `BAD_REQUEST` — SMS body exceeds 160 characters
+            - `UNSUPPORTED_CHANNEL` — channel is null or not in [EMAIL, SMS, ZALO]
+            - `INVALID_REQUEST` — malformed JSON or unknown enum value (e.g. channel="UNKNOWN")
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-              example:
-                code: VALIDATION_ERROR
-                message: "Request validation failed"
-                errors:
-                  - field: body
+              examples:
+                validation_missing_field:
+                  summary: Missing required field
+                  value:
+                    code: VALIDATION_ERROR
+                    message: "Request validation failed"
+                    errors:
+                      - field: recipientId
+                        message: "recipient_id is required"
+                    timestamp: "2026-04-13T08:00:00Z"
+                    correlation_id: "d4e5f6a7-b8c9-0123-def4-567890abcdef"
+                sms_body_too_long:
+                  summary: SMS body exceeds 160 characters
+                  value:
+                    code: BAD_REQUEST
                     message: "SMS body must not exceed 160 characters"
-                timestamp: "2026-04-13T08:00:00Z"
-                correlation_id: "d4e5f6a7-b8c9-0123-def4-567890abcdef"
+                    errors: []
+                    timestamp: "2026-04-13T08:00:00Z"
+                    correlation_id: "d4e5f6a7-b8c9-0123-def4-567890abcdef"
+                invalid_enum_channel:
+                  summary: Unknown channel string (e.g. "UNKNOWN")
+                  value:
+                    code: INVALID_REQUEST
+                    message: "Invalid value 'UNKNOWN' — allowed values: EMAIL, SMS, ZALO"
+                    errors: []
+                    timestamp: "2026-04-13T08:00:00Z"
+                    correlation_id: "d4e5f6a7-b8c9-0123-def4-567890abcdef"
 
   /notifications/{id}:
     parameters:

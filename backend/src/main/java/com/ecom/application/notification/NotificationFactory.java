@@ -30,9 +30,13 @@ public class NotificationFactory {
      *
      * @param channel the target notification channel
      * @return the matching {@link NotificationSender}
-     * @throws IllegalArgumentException if {@code channel} has no registered sender
+     * @throws UnsupportedChannelException if {@code channel} is {@code null} or
+     *                                     has no registered sender
      */
     public NotificationSender resolve(ChannelType channel) {
+        if (channel == null) {
+            throw new UnsupportedChannelException(null);
+        }
         return switch (channel) {
             case EMAIL -> emailSender;
             case SMS   -> smsSender;

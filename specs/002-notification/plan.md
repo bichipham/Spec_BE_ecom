@@ -5,11 +5,16 @@
 
 ## Summary
 
-Xây dựng hệ thống thông báo đa kênh (Email, SMS, Zalo) sử dụng Factory Pattern để phân giải
-`NotificationSender` theo `ChannelType`. Interface `NotificationSender` một phương thức `send()`;
-ba stub implementation ghi log. Domain entity `Notification` lưu trạng thái
-`PENDING / SENT / FAILED`; persistence tạm thời bằng file JSON riêng theo kênh. Hai endpoint:
-`POST /api/v1/notifications/send` và `GET /api/v1/notifications/{id}`.
+Xây dựng hệ thống thông báo đa kênh (Email, SMS, Zalo) sử dụng **Strategy Pattern + Factory Pattern**.
+
+- **Strategy Pattern**: `NotificationSender` là interface chiến lược; `EmailSender`, `SmsSender`,
+  `ZaloSender` là concrete strategy độc lập — mỗi class không import hay phụ thuộc vào nhau.
+- **Factory Pattern**: `NotificationFactory` nhận `ChannelType` và trả về đúng concrete strategy,
+  ẩn việc chọn implementation khỏi tầng nghiệp vụ (Open/Closed via strategy).
+
+Domain entity `Notification` lưu trạng thái `PENDING / SENT / FAILED`;
+persistence tạm thời bằng file JSON riêng theo kênh qua repository abstraction.
+Hai endpoint: `POST /api/v1/notifications/send` và `GET /api/v1/notifications/{id}`.
 
 ## Technical Context
 
@@ -21,7 +26,7 @@ ba stub implementation ghi log. Domain entity `Notification` lưu trạng thái
 **Project Type**: Backend web-service (REST API)  
 **Performance Goals**: p95 < 300ms cho read, < 500ms cho send với dữ liệu vận hành cơ bản  
 **Constraints**: API versioned `/api/v1`, validation bắt buộc, response lỗi chuẩn hóa, không truy cập file trực tiếp từ controller; SMS body ≤ 160 ký tự; subject bỏ qua cho SMS/ZALO  
-**Scale/Scope**: 1 domain entity + Factory Pattern + 3 channel senders (stub)
+**Scale/Scope**: 1 domain entity + Strategy Pattern (3 independent concrete strategies) + Factory Pattern (channel resolver)
 
 ## Constitution Check
 
@@ -35,6 +40,7 @@ ba stub implementation ghi log. Domain entity `Notification` lưu trạng thái
 - [x] Storage abstraction present: `NotificationRepository` interface isolate JSON file persistence.
 - [x] Migration readiness documented: thay `JsonNotificationRepository` bằng JPA là đủ.
 - [x] Observability included: structured logging, correlation IDs, health/readiness endpoints (kế thừa từ 001).
+- [x] Strategy isolation enforced: concrete strategies (`EmailSender`, `SmsSender`, `ZaloSender`) không import nhau; thêm kênh mới chỉ thêm class mới + đăng ký factory.
 
 **Post-Design Gate (PASS)**
 
@@ -42,6 +48,7 @@ ba stub implementation ghi log. Domain entity `Notification` lưu trạng thái
 - [x] `contracts/openapi.yaml` chốt API contracts cho `POST /send` và `GET /{id}`.
 - [x] `quickstart.md` mô tả kiểm thử độc lập từng user story.
 - [x] `research.md` chốt quyết định kỹ thuật không còn mục NEEDS CLARIFICATION.
+- [x] Cross-dependency gate: không có import chéo giữa concrete strategy — xác minh qua code review (SC-006).
 
 ## Project Structure
 

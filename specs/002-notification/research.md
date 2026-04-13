@@ -54,3 +54,34 @@
 ## Resolved Clarifications
 
 Không còn mục NEEDS CLARIFICATION trong technical context của plan.
+
+---
+
+## Decision 7: Migration path JSON → JPA/PostgreSQL (T028)
+
+- **Decision**: Thay `JsonNotificationRepository` bằng JPA `@Repository` implement `NotificationRepository` là đủ để migrate kho lưu trữ mà không sửa bất kỳ tầng nào khác.
+- **Migration checklist**:
+  1. Thêm dependency `spring-boot-starter-data-jpa` + JDBC driver vào `pom.xml`.
+  2. Tạo `JpaNotificationRepository extends JpaRepository<Notification, String>`.
+  3. Tạo `JpaNotificationRepositoryAdapter implements NotificationRepository` — uỷ quyền sang Spring Data repo.
+  4. Xoá hoặc disable `JsonNotificationRepository` bean (`@ConditionalOnProperty` hoặc Spring profile).
+  5. Thêm `@Entity`, `@Table`, `@Column` vào `Notification.java` (hiện dùng Lombok `@Data`).
+  6. Xoá ba file `notifications-*.json`, xoá seed data.
+- **Zero-change boundary**: `NotificationService`, `NotificationFactory`, tất cả concrete strategy, `NotificationController`, DTOs — **không cần sửa đổi**.
+- **Rationale**: Repository pattern tách biệt hoàn toàn nghiệp vụ khỏi cơ chế lưu trữ (FR-012); toàn bộ tầng application thao tác qua `NotificationRepository` interface.
+
+---
+
+## Decision 8: Cross-dependency verification — Concrete Strategy isolation (T030 / SC-006)
+
+- **Verification date**: 2026-04-13
+- **Result**: PASS ✅ — không có cross-import giữa các concrete strategy.
+
+| Class | Imports concrete strategy | Result |
+|---|---|---|
+| `EmailSender.java` | `SmsSender`, `ZaloSender`: **không** | ✅ |
+| `SmsSender.java` | `EmailSender`, `ZaloSender`: **không** | ✅ |
+| `ZaloSender.java` | `EmailSender`, `SmsSender`: **không** | ✅ |
+
+- **Mỗi class chỉ phụ thuộc**: `NotificationSender` (interface), `Notification` (domain entity), `@Slf4j`, `@Component`.
+- **Rationale**: Tuân thủ FR-003 (Independence) và SC-006; thêm kênh mới không ảnh hưởng runtime bất kỳ concrete strategy hiện có (FR-013 — strategy isolation).

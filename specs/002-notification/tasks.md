@@ -35,17 +35,22 @@
 
 ## Phase 3: User Story 1 - Gửi thông báo qua kênh được chọn (Priority: P1) 🎯 MVP
 
-**Goal**: Triển khai Factory Pattern với 3 stub sender, NotificationService điều phối vòng đời PENDING→SENT/FAILED, endpoint POST /api/v1/notifications/send
+**Goal**: Triển khai **Strategy Pattern + Factory Pattern**:
+- `NotificationSender` là **Strategy interface** (hợp đồng duy nhất)
+- `EmailSender`, `SmsSender`, `ZaloSender` là **Concrete Strategy** độc lập, không import nhau
+- `NotificationFactory` là **Factory** chọn đúng strategy theo `ChannelType` tại runtime
+- `NotificationService` điều phối vòng đời PENDING→SENT/FAILED, endpoint `POST /api/v1/notifications/send`
 
-**Independent Test**: Gọi POST /api/v1/notifications/send với channel = EMAIL, SMS, ZALO; xác nhận đúng sender ghi log và thông báo được lưu với trạng thái SENT trong đúng file JSON theo kênh
+**Independent Test**: Gọi `POST /api/v1/notifications/send` với `channel` = EMAIL, SMS, ZALO;
+xác nhận đúng concrete strategy được gọi (qua log) và thông báo lưu đúng file JSON kênh với trạng thái SENT
 
 ### Implementation for User Story 1
 
-- [x] T009 [P] [US1] Tạo interface NotificationSender với phương thức send(Notification) trong backend/src/main/java/com/ecom/application/notification/NotificationSender.java
-- [x] T010 [P] [US1] Tạo EmailSender stub ghi log đánh dấu gửi qua kênh Email trong backend/src/main/java/com/ecom/application/notification/EmailSender.java
-- [x] T011 [P] [US1] Tạo SmsSender stub ghi log đánh dấu gửi qua kênh SMS trong backend/src/main/java/com/ecom/application/notification/SmsSender.java
-- [x] T012 [P] [US1] Tạo ZaloSender stub ghi log đánh dấu gửi qua kênh Zalo trong backend/src/main/java/com/ecom/application/notification/ZaloSender.java
-- [x] T013 [US1] Tạo NotificationFactory phân giải đúng sender theo ChannelType trong backend/src/main/java/com/ecom/application/notification/NotificationFactory.java
+- [x] T009 [P] [US1] Tạo **Strategy interface** `NotificationSender` với phương thức `send(Notification)` trong backend/src/main/java/com/ecom/application/notification/NotificationSender.java
+- [x] T010 [P] [US1] Tạo **Concrete Strategy** `EmailSender` (stub ghi log) — chỉ implement `NotificationSender`, không import sender khác trong backend/src/main/java/com/ecom/application/notification/EmailSender.java
+- [x] T011 [P] [US1] Tạo **Concrete Strategy** `SmsSender` (stub ghi log) — chỉ implement `NotificationSender`, không import sender khác trong backend/src/main/java/com/ecom/application/notification/SmsSender.java
+- [x] T012 [P] [US1] Tạo **Concrete Strategy** `ZaloSender` (stub ghi log) — chỉ implement `NotificationSender`, không import sender khác trong backend/src/main/java/com/ecom/application/notification/ZaloSender.java
+- [x] T013 [US1] Tạo **Factory** `NotificationFactory` — nhận `ChannelType`, trả đúng concrete strategy; ném exception rõ ràng cho kênh không hỗ trợ trong backend/src/main/java/com/ecom/application/notification/NotificationFactory.java
 - [x] T014 [P] [US1] Tạo NotificationDtos (SendNotificationRequest, NotificationResponse) trong backend/src/main/java/com/ecom/api/notification/dto/NotificationDtos.java
 - [x] T015 [US1] Tạo NotificationService xử lý luồng gửi PENDING → SENT/FAILED và lưu bản ghi trong backend/src/main/java/com/ecom/application/notification/NotificationService.java
 - [x] T016 [US1] Triển khai NotificationController POST /api/v1/notifications/send trong backend/src/main/java/com/ecom/api/notification/NotificationController.java
@@ -58,17 +63,18 @@
 
 ## Phase 4: User Story 2 - Truy vấn trạng thái và chi tiết thông báo (Priority: P2)
 
-**Goal**: Bổ sung GET /api/v1/notifications/{id} tìm kiếm tuần tự qua các file kênh, trả 404 khi không tìm thấy
+**Goal**: `GET /api/v1/notifications/{id}` tìm kiếm tuần tự qua các file kênh, trả 404 khi không tìm thấy.
+**Note**: `findById()` và `GET /{id}` đã được triển khai trong T015/T016 như một phần của US1 MVP.
 
 **Independent Test**: Tạo thông báo qua POST /send, sau đó gọi GET /api/v1/notifications/{id}; xác nhận đầy đủ các trường trả về khớp dữ liệu đã tạo; kiểm tra 404 với id không tồn tại
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] Mở rộng NotificationService với phương thức findById và ném NotFoundException khi không tìm thấy trong backend/src/main/java/com/ecom/application/notification/NotificationService.java
-- [ ] T020 [US2] Bổ sung endpoint GET /api/v1/notifications/{id} vào NotificationController trong backend/src/main/java/com/ecom/api/notification/NotificationController.java
-- [ ] T021 [US2] Đồng bộ schema endpoint GET /{id} và response 404 vào specs/002-notification/contracts/openapi.yaml
+- [x] T019 [US2] `findById` trong `NotificationService` đã có từ T015 — ném `ResourceNotFoundException.of("Notification", id)` khi không tìm thấy trong backend/src/main/java/com/ecom/application/notification/NotificationService.java
+- [x] T020 [US2] `GET /api/v1/notifications/{id}` đã có từ T016 — điều hướng tớisérvice.findById(), trả 404 tự động qua `GlobalExceptionHandler` trong backend/src/main/java/com/ecom/api/notification/NotificationController.java
+- [x] T021 [US2] Schema `GET /{id}` và response 404 đã có từ speckit.plan trong specs/002-notification/contracts/openapi.yaml
 
-**Checkpoint**: User Story 2 có thể kiểm thử độc lập trên nền US1
+**Checkpoint**: User Story 2 đã được triển khai hoàn chỉnh cùng US1 — có thể kiểm thử ngay
 
 ---
 
@@ -80,11 +86,12 @@
 
 ### Implementation for User Story 3
 
-- [ ] T022 [P] [US3] Bổ sung ràng buộc @NotBlank recipientId, @NotBlank body và @Size(max=160) khi channel=SMS vào SendNotificationRequest trong backend/src/main/java/com/ecom/api/notification/dto/NotificationDtos.java
-- [ ] T023 [P] [US3] Tạo UnsupportedChannelException và cập nhật NotificationFactory ném exception khi channel không hợp lệ trong backend/src/main/java/com/ecom/application/notification/NotificationFactory.java
-- [ ] T024 [US3] Xử lý sender ném exception → cập nhật trạng thái FAILED và lưu bản ghi trong NotificationService trong backend/src/main/java/com/ecom/application/notification/NotificationService.java
-- [ ] T025 [US3] Đăng ký handler UnsupportedChannelException trả 400 Bad Request rõ ràng trong backend/src/main/java/com/ecom/api/common/GlobalExceptionHandler.java
-- [ ] T026 [US3] Đồng bộ error response contract (400 validation, 400 channel không hợp lệ) vào specs/002-notification/contracts/openapi.yaml
+- [x] T022 [P] [US3] Validation đầu vào đã có: `@NotBlank recipientId`, `@NotBlank body`, `@NotNull channel` trong DTO; SMS 160-char guard trong `NotificationService.validateRequest()` bằng `IllegalArgumentException` (cross-field validation không thể dùng `@Size` tiêu chuẩn — service-layer là approach đúng) trong backend/src/main/java/com/ecom/api/notification/dto/NotificationDtos.java và backend/src/main/java/com/ecom/application/notification/NotificationService.java
+- [x] T023 [P] [US3] Tạo `UnsupportedChannelException` và cập nhật `NotificationFactory` ném exception khi `ChannelType` không hỗ trợ thay vì siết logic sang concrete strategy trong backend/src/main/java/com/ecom/application/notification/NotificationFactory.java
+- [x] T024 [US3] `NotificationService` đã xử lý: `catch(Exception ex)` → `status=FAILED` → `save()` (FR-013 — lỗi một strategy không lan sang strategy khác) trong backend/src/main/java/com/ecom/application/notification/NotificationService.java
+- [x] T025 [US3] Đăng ký handler `UnsupportedChannelException` trả 400 Bad Request rõ ràng (phụ thuộc T023) trong backend/src/main/java/com/ecom/api/common/GlobalExceptionHandler.java
+- [x] T026 [US3] Đồng bộ error response contract (400 validation, 400 channel không hợp lệ) vào specs/002-notification/contracts/openapi.yaml
+- [x] T031 [US3] 🚫 **[GAP — SC-003]** Thêm handler `HttpMessageNotReadableException` → 400 trong `GlobalExceptionHandler`: khi `channel="UNKNOWN"` Jackson ném `InvalidFormatException`, hiện tại rơi xuống handler 500 chung; cần trả 400 kèm thông điệp rõ ràng (FR-010, FR-011, US3 scenario 1) trong backend/src/main/java/com/ecom/api/common/GlobalExceptionHandler.java
 
 **Checkpoint**: User Story 3 có thể kiểm thử độc lập
 
@@ -94,9 +101,10 @@
 
 **Purpose**: Hoàn thiện tài liệu, chuẩn hóa API doc và chuẩn bị bàn giao
 
-- [ ] T027 [P] Chuẩn hóa OpenAPI tag Notifications và mô tả đầy đủ cho controller trong backend/src/main/java/com/ecom/api/notification/NotificationController.java
-- [ ] T028 Rà soát và bổ sung migration note JSON → JPA/PostgreSQL trong specs/002-notification/research.md
-- [ ] T029 [P] Bổ sung hướng dẫn kiểm thử error path và edge case vào specs/002-notification/quickstart.md
+- [x] T027 [P] Chuẩn hóa OpenAPI tag Notifications và mô tả đầy đủ cho controller trong backend/src/main/java/com/ecom/api/notification/NotificationController.java
+- [x] T028 Rà soát và bổ sung migration note JSON → JPA/PostgreSQL trong specs/002-notification/research.md
+- [x] T029 [P] Bổ sung hướng dẫn kiểm thử error path và edge case vào specs/002-notification/quickstart.md
+- [x] T030 [P] Xác minh không có cross-import giữa concrete strategy: kiểm tra `EmailSender`, `SmsSender`, `ZaloSender` không import nhau (SC-006); ghi kết quả vào specs/002-notification/research.md
 
 ---
 
@@ -119,15 +127,18 @@
 
 - Enums trước entity.
 - Repository interface trước implementation.
-- Interface NotificationSender trước từng sender implementation.
-- Senders trước NotificationFactory.
-- Factory trước NotificationService.
+- **Strategy interface** `NotificationSender` trước mọi concrete strategy.
+- Concrete strategy (`EmailSender`, `SmsSender`, `ZaloSender`) độc lập nhau — có thể viết song song, không có thứ tự phụ thuộc giữa chúng.
+- **Factory** `NotificationFactory` sau khi có đủ các concrete strategy.
+- `NotificationFactory` trước `NotificationService`.
 - Service trước controller.
 - Controller trước cập nhật contract & quickstart.
 
 ### Parallel Opportunities
 
 - Setup: T001, T002, T003 song song.
+- Concrete strategies T010, T011, T012 song song (không phụ thuộc nhau, chỉ cần T009 interface sẵn).
+- T019/T020 có thể song song sau khi T015/T016 đã có skeleton.
 - Foundational: T004, T005 song song; T006 → T007 → T008 tuần tự.
 - US1: T009-T012 song song với nhau; T014 song song với T009-T012; T013 sau T009-T012; T015 sau T013+T014.
 - US3: T022, T023 song song.

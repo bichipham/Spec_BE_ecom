@@ -23,6 +23,7 @@
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/NotificationSender.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/NotificationService.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/SmsSender.java
+/Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/UnsupportedChannelException.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/notification/ZaloSender.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/order/OrderService.java
 /Users/macbook16/Documents/Projects/ecomspeckit/BEJava/Spec_BE_ecom/backend/src/main/java/com/ecom/application/orderitem/OrderItemService.java
