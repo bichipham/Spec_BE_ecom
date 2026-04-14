@@ -19,6 +19,7 @@ import java.time.Instant;
  * <ul>
  *   <li>{@link Role#ADMIN} – full CRUD + user management access.</li>
  *   <li>{@link Role#OPERATOR} – day-to-day order/product operations.</li>
+ *   <li>{@link Role#GUEST} – self-registered user with limited read-only access.</li>
  * </ul>
  */
 @Data
@@ -39,6 +40,7 @@ public class User {
 
     public enum Role {
         ADMIN,
-        OPERATOR
+        OPERATOR,
+        GUEST
     }
 }
