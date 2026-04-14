@@ -10,7 +10,7 @@
 
 ```bash
 # từ root của repo
-JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-25.jdk/Contents/Home \
+JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-21.jdk/Contents/Home \
   /usr/local/bin/mvn -f backend/pom.xml spring-boot:run
 ```
 
@@ -150,7 +150,7 @@ curl -s -X POST http://localhost:8081/api/v1/notifications/send \
 - Response dùng format lỗi chuẩn hóa (`code`, `message`, `errors`, `timestamp`, `correlation_id`).
 - IDs là UUID duy nhất cho mọi notification.
 - `sentAt` được gán khi `status = SENT`; null khi `PENDING` hoặc `FAILED`.
-- `subject` không có trong response khi `channel = SMS` hoặc `channel = ZALO`.
+- `subject` có giá trị `null` trong response khi `channel = SMS` hoặc `channel = ZALO`.
 - Logs có `correlationId` cho mỗi request (header `X-Correlation-Id`).
 - Dữ liệu được lưu vào đúng file JSON theo channel trong `backend/src/main/resources/data/`.
 - Không có thông tin nội bộ (stack trace) rò rỉ trong response lỗi.

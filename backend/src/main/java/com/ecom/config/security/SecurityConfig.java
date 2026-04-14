@@ -63,8 +63,6 @@ public class SecurityConfig {
                         // ── Public ───────────────────────────────────────────
                         .requestMatchers(PUBLIC_PATHS).permitAll()
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
-                        // Guest registration – no auth required
-                        .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
                         // Notifications – authenticated access required for internal/service calls
                         .requestMatchers("/api/v1/notifications/**").authenticated()
                         .requestMatchers("/api/v1/notifications").authenticated()

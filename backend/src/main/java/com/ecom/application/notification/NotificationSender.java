@@ -8,9 +8,9 @@ import com.ecom.domain.model.Notification;
  * <p>Each supported channel provides exactly one implementation:
  * {@link EmailSender}, {@link SmsSender}, {@link ZaloSender}.
  *
- * <p>Adding a new channel requires only implementing this interface and
- * registering the new {@link com.ecom.domain.model.ChannelType} value —
- * no changes to existing senders or {@link NotificationFactory} (Open/Closed).
+ * <p>Adding a new channel requires implementing this interface, registering the
+ * new {@link com.ecom.domain.model.ChannelType} value, and updating
+ * {@link NotificationFactory} to route that channel to the new sender.
  */
 public interface NotificationSender {
 
