@@ -65,9 +65,9 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/login").permitAll()
                         // Guest registration – no auth required
                         .requestMatchers(HttpMethod.POST, "/api/v1/users").permitAll()
-                        // Notifications – no auth required (internal/service calls)
-                        .requestMatchers("/api/v1/notifications/**").permitAll()
-                        .requestMatchers("/api/v1/notifications").permitAll()
+                        // Notifications – authenticated access required for internal/service calls
+                        .requestMatchers("/api/v1/notifications/**").authenticated()
+                        .requestMatchers("/api/v1/notifications").authenticated()
 
                         // ── Users → ADMIN only ───────────────────────────────
                         .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
